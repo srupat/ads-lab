@@ -28,7 +28,43 @@ struct Node * insert(int num,struct Node * root)
     }
     // return root;
 }
+
+struct Node * findMax(struct Node * t)
+{
+    while(t->right!=NULL)
+       { t = t->right;}
+
+    return t;
+}
+
+struct Node * delete(struct Node * root, int val)
+{
+    struct Node * temp;
+    if(root == NULL) printf("value not present");
     
+    else if(val<root->data) root->left = delete(root->left,val);
+    
+    else if(val>root->data) root->right = delete(root->right,val);
+
+    else
+    {
+        if(root->right!=NULL && root->left!=NULL)
+        {
+            temp = findMax(root->left);
+            root->data = temp->data;
+            root->left = delete(root->left,temp->data);
+        }
+        else{
+            temp = root;
+            if(root->left == NULL) root = root->right;
+            if(root->right == NULL) root = root->left;
+            free(temp);
+        }
+    }
+    return root;
+}  
+
+
 void preorder(struct Node * root)
 {
     // printf("! ");
@@ -105,6 +141,9 @@ int main()
             else printf("Not Present\n");
             break;
         case 6:
+            printf("Enter the data to be deleted\n");
+            scanf("%d",&num);
+            delete(root,num);
             break;
         case 7:
             exit(1);

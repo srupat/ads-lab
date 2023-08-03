@@ -47,7 +47,7 @@ struct queue * createQueue()
 
 int isEmpty(struct queue * queue)
 {
-    if(queue->f = NULL) return 1;
+    if(queue->f == NULL) return 1;
     return 0;
 }
 
@@ -137,7 +137,12 @@ struct Node* insert(int parent, struct Node* root, int data, int choice) {
         } else if (choice == 1) {
             root->right = insert(parent, root->right, data, choice); 
         }
-    }
+    } else {
+        if(choice==0){
+            root->left = insert(parent, root->left, data, choice);}
+        else if(choice ==1){    
+            root->right = insert(parent, root->right, data, choice);}
+     }
 
     return root;
 }
@@ -176,53 +181,53 @@ int main()
     struct Node * root = NULL;
 
     root = insert(0,root,15,0);
-    insert(15,root,13,0);
-    insert(15,root,16,1);
-    insert(13,root,3,1);
+    // insert(15,root,13,0);
+    // insert(15,root,16,1);
+    // insert(13,root,3,1);
 
-    printLeafNodes(root);
-    levelOrderTraversal(root);
-    mirror(root);
-    compute_height(root);
+    // printLeafNodes(root);
+    // levelOrderTraversal(root);
+    // mirror(root);
+    // compute_height(root);
 
-    // while(1){
-    // printf("Enter 1 to insert\n2 to compute height\n3 to display level-order traversal\n4 to detect whether given tree has mirror image or not\n5 to print all leaf nodes recursively\n6 to construct mirror image of given binary tree\n7 to exit\n\n");
-    // scanf("%d",&ch);
-    // switch (ch)
-    //     {
-    //     case 1:
-    //         printf("Enter data of the node to be inserted\n");
-    //         scanf("%d",&num);
-    //         printf("Enter the parent\n");
-    //         scanf("%d",&parent);
-    //         printf("Enter 0 to insert to the left and 1 to insert to the right\n");
-    //         scanf("%d",&choice);
-    //         insert(parent,root,num,choice);
-    //         break;
-    //     case 2:
-    //         printf("%d",compute_height(root));
-    //         break;
-    //     case 3:
-    //         levelOrderTraversal(root);
-    //         printf("\n\n");
-    //         break;
-    //     case 4:
-    //         if(hasMirrorImage) printf("the given tree has a mirror image\n");
-    //         else printf("the given tree does not have a mirror image\n");
-    //         break;
-    //     case 5:
-    //         printLeafNodes(root);
-    //         break;
-    //     case 6:
-    //         mirror(root);
-    //         break;
-    //     case 7:
-    //         exit(1);
-    //         break;
-    //     default:
-    //         printf("Invalid\n");
-    //         break;
-    //     }
-    // }
+    while(1){
+    printf("Enter 1 to insert\n2 to compute height\n3 to display level-order traversal\n4 to detect whether given tree has mirror image or not\n5 to print all leaf nodes recursively\n6 to construct mirror image of given binary tree\n7 to exit\n\n");
+    scanf("%d",&ch);
+    switch (ch)
+        {
+        case 1:
+            printf("Enter data of the node to be inserted\n");
+            scanf("%d",&num);
+            printf("Enter the parent\n");
+            scanf("%d",&parent);
+            printf("Enter 0 to insert to the left and 1 to insert to the right\n");
+            scanf("%d",&choice);
+            insert(parent,root,num,choice);
+            break;
+        case 2:
+            printf("%d",compute_height(root));
+            break;
+        case 3:
+            levelOrderTraversal(root);
+            printf("\n\n");
+            break;
+        case 4:
+            if(hasMirrorImage) printf("the given tree has a mirror image\n");
+            else printf("the given tree does not have a mirror image\n");
+            break;
+        case 5:
+            printLeafNodes(root);
+            break;
+        case 6:
+            mirror(root);
+            break;
+        case 7:
+            exit(1);
+            break;
+        default:
+            printf("Invalid\n");
+            break;
+        }
+    }
     return 0;
 }

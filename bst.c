@@ -12,10 +12,11 @@ struct Node * insert(int num,struct Node * root)
     
     if(root == NULL)
     {
-        struct Node * root = (struct Node *)malloc(sizeof(struct Node));
-        root->data = num;
-        root->left = NULL;
-        root->right = NULL;
+        struct Node * temp = (struct Node *)malloc(sizeof(struct Node));
+        temp->data = num;
+        temp->left = NULL;
+        temp->right = NULL;
+        root = temp;
         return root;
     }
     else if(num>root->data)
@@ -26,7 +27,7 @@ struct Node * insert(int num,struct Node * root)
     {
         root->left = insert(num,root->left);
     }
-    // return root;
+     return root;
 }
 
 struct Node * findMax(struct Node * t)

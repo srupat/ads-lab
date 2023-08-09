@@ -25,7 +25,7 @@ struct Node * insert(int num,struct Node * root)
     }
     else if (num<root->data)
     {
-        root->left = insert(num,root->left);
+        root->left = insert(num,root->left);        
     }
      return root;
 }

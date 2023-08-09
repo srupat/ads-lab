@@ -1,167 +1,108 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-struct Node{
+struct Node {
     int data;
-    struct Node *right,*left;
+    struct Node * left;
+    struct Node * right;
+    int lbit,rbit;
 };
 
-struct Node * insert(int num,struct Node * root)
-{
-    // printf("! ");
-    
-    if(root == NULL)
-    {
-        struct Node * root = (struct Node *)malloc(sizeof(struct Node));
-        root->data = num;
-        root->left = NULL;
-        root->right = NULL;
-        return root;
+// type of tree - inorder threaded binary tree
+
+struct Node * inorder_succ(struct Node * p) {
+    if (p->rbit == 0) return p->right;
+    p = p->right;
+    while (p->lbit == 1) {
+        p = p->left;
     }
-    else if(num>root->data)
-    {
-        root->right = insert(num,root->right);
-    }
-    else if (num<root->data)
-    {
-        root->left = insert(num,root->left);
-    }
-    // return root;
+    return p;
 }
 
-struct Node * findMax(struct Node * t)
-{
-    while(t->right!=NULL)
-       { t = t->right;}
 
-    return t;
+void inorder(struct Node * p) {
+    struct Node * head = p;
+    p = p->left;
+    while (p->lbit == 1) p = p->left;
+    
+    while (p != head) {
+        printf("%d ", p->data);
+        p = inorder_succ(p);
+    }
+
+    // Print the last node
+    printf("%d ", p->data);
+
+    printf("\n");
 }
 
-struct Node * delete(struct Node * root, int val)
-{
-    struct Node * temp;
-    if(root == NULL) printf("value not present");
-    
-    else if(val<root->data) root->left = delete(root->left,val);
-    
-    else if(val>root->data) root->right = delete(root->right,val);
 
-    else
+struct Node * insert(int val, struct Node * root)
+{
+    if (root == NULL)
     {
-        if(root->right!=NULL && root->left!=NULL)
+        struct Node * temp = (struct Node *)malloc(sizeof(struct Node));
+        temp->data = val;
+        temp->left = temp->right = temp;
+        temp->lbit = temp->rbit = 0;
+        return temp;
+    }
+
+    if (root->data > val)
+    {
+        if (root->lbit == 1)
         {
-            temp = findMax(root->left);
-            root->data = temp->data;
-            root->left = delete(root->left,temp->data);
+            root->left = insert(val, root->left);
         }
-        else{
-            temp = root;
-            if(root->left == NULL) root = root->right;
-            if(root->right == NULL) root = root->left;
-            free(temp);
+        else
+        {
+            struct Node * temp = (struct Node *)malloc(sizeof(struct Node));
+            temp->data = val;
+            temp->left = root->left;
+            temp->right = root;
+            temp->lbit = temp->rbit = 1; 
+            root->left = temp;
+            root->lbit = 0; 
         }
     }
+    else if (root->data < val) 
+    {
+        if (root->rbit == 1)
+        {
+            root->right = insert(val, root->right);
+        }
+        else
+        {
+            struct Node * temp = (struct Node *)malloc(sizeof(struct Node));
+            temp->data = val;
+            temp->right = root->right;
+            temp->left = root;
+            temp->lbit = temp->rbit = 1; 
+            root->right = temp;
+            root->rbit = 0; 
+        }
+    }
+    
     return root;
-}  
-
-void preorder(struct Node * root)
-{
-    // printf("! ");
-    if(root == NULL)return;
-    
-    printf("%d  ", root->data);
-    preorder(root->left);
-    preorder(root->right);
-    
 }
 
-void postorder(struct Node * root)
-{
-    if(root == NULL)return;
-    
-    preorder(root->left);
-    preorder(root->right);
-    printf("%d  ", root->data);
-    
-}
-
-void inorder(struct Node * root)
-{
-    // printf("! ");
-    if(root == NULL)return;
-    
-    preorder(root->left);
-    printf(" %d  ", root->data);
-    preorder(root->right);
-    
-}
-
-int search(struct Node * root, int val)
-{
-    if(root == NULL)return 0;
-    if(root->data==val)return 1;
-    if(root->data<val)return search(root->right,val);
-    if(root->data>val)return search(root->left,val);
-}
 
 int main()
 {
-    int ch,num;
-    struct Node * root = NULL;
-    printf("Enter the data of root node\n");
-    scanf("%d",&num);
-    root = insert(num,root);
-    while(1){
-    printf("Enter 1 to insert\n2 to display(preorder)\n3 to display(inorder)\n4 to display(postorder)\n5 to search\n6 to delete\n7 to exit\n\n");
-    scanf("%d",&ch);
-    switch (ch)
-        {
-        case 1:
-            printf("Enter data of the node to be inserted\n");
-            scanf("%d",&num);
-            insert(num,root);
-            break;
-        case 2:
-            preorder(root);
-            printf("\n\n");
-            break;
-        case 3:
-            inorder(root);
-            printf("\n\n");
-            break;
-        case 4:
-            postorder(root);
-            printf("\n\n");
-            break;
-        case 5:
-            printf("Enter the data to be searched\n");
-            scanf("%d",&num);
-            if(search(root,num)==1) printf("Present\n");
-            else printf("Not Present\n");
-            break;
-        case 6:
-            printf("Enter the data to be deleted\n");
-            scanf("%d",&num);
-            delete(root,num);
-            break;
-        case 7:
-            exit(1);
-            break;
-        default:
-            printf("Invalid\n");
-            break;
-        }
-    }
-    
-    // root = insert(10,root);
-    // insert(7,root);
-    // insert(8,root);
-    // insert(15,root);
+    struct Node * head = (struct Node *)malloc(sizeof(struct Node));
+    head->lbit=head->rbit = 1;
+    head->left = NULL;
+    head->right = head;
 
-    // preorder(root);
-    // postorder(root);
-    // inorder(root);
-    // printf("%d",search(root,8));
+    struct Node * root = NULL;
+    root = insert(10,root);
+    head->left = root;
+
+    insert(15,root);
+    insert(11,root);
+    insert(3,root);
+    
+    inorder(root);
 
     return 0;
 }

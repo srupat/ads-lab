@@ -53,7 +53,8 @@ int isEmpty(struct queue * queue)
 
 void enqueue(struct queue * queue, struct Node* data) {
     struct queueNode* newNode = createQueueNode(data);
-    if (queue->r == NULL) {
+    if (queue->r == NULL) // if its the first ever node to be enqueued 
+    {
         queue->f = newNode;
         queue->r = newNode;
     } else {

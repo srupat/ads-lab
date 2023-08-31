@@ -27,7 +27,7 @@ struct Node * insert(int num,struct Node * root)
     {
         root->left = insert(num,root->left);        
     }
-     return root;
+    return root;
 }
 
 struct Node * findMax(struct Node * t)

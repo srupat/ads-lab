@@ -111,6 +111,7 @@ int original_parent(int i, int * parent)
     {
         i = parent[i];
     }
+    if(parent[i]==0) i = 0;
     return i;
 }
 
@@ -119,44 +120,49 @@ int whether_original_parent_equal(int i, int j, int * parent)
     if(i!=j)
     {
         parent[j] = i;
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 void Kruskal_adj_mat(int **G, int n)
 {
-    int * parent = (int*)malloc(sizeof(int)*n);
-    int * visited = (int*)malloc(sizeof(int)*n);
+    //int * parent = (int *)calloc(n,sizeof(int));    
+    int* parent = (int*)malloc(n*sizeof(int));
+    int* visited = (int*)malloc(n*sizeof(int));
 
     int a, b, u, v;
 
     int ne=0;
     int mincost = 0;
-    while(ne<n)
+    
+    while(ne<n-1)
     {
+        int min = 999;
         for(int i=0;i<n;i++)
-        {
-            int min = 999;
+        {            
             for(int j=0;j<n;j++)
             {
+                
                 if(G[i][j] < min)
                 {
                     min = G[i][j];
-                    parent[j] = 1;
+                    parent[j] = i;
                     a = u = i;
                     b = v = j;
                 }
             }
-            u = original_parent(u, parent);
-            v = original_parent(v, parent);
-            if(whether_original_parent_equal(u,v, parent))
-            {
-                printf("%d edge (%d, %d) = %d\n", ne++, a, b, min);
-                mincost+=min;
-            }
-            G[a][b] = G[b][a] = 99;
+            
         }
+        u = original_parent(u, parent);
+        v = original_parent(v, parent);
+        if(whether_original_parent_equal(u,v, parent))
+        {
+            printf("%d edge (%d, %d) = %d\n", ++ne, a, b, min);
+            mincost+=min;
+            //visited[b] = 1;
+        }
+        G[a][b] = G[b][a] = 99;
     }
     printf("The cost of MST is %d", mincost);
 }

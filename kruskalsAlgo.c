@@ -125,6 +125,60 @@ int whether_original_parent_equal(int i, int j, int * parent)
     return 1;
 }
 
+void remove_edge(struct Node ** A, int n, int a, int b)
+{
+    for(int i =0;i<n;i++)
+    {
+        struct Node * temp = A[i]->next;
+        while(temp != NULL)
+        {
+            if(temp->data == a || temp->data == b)
+            {
+                temp->data = 99;
+            }
+            temp = temp->next;
+        }
+    }
+}
+
+void Kruskal_adj_list(struct Node ** A, int n)
+{
+    int* parent = (int*)calloc(n,sizeof(int));
+    int * visited = (int*)calloc(n,sizeof(int));
+    int a,b,u,v;
+    int ne = 0;
+    int mincost = 0;
+    while(ne < n-1)
+    {
+        int min = 999;
+        for(int i=0;i<n;i++)
+        {
+            struct Node* temp = A[i]->next;
+            while(temp != NULL)
+            {
+                if(temp->weight<min && visited[temp->data]==0)
+                {
+                    min = temp->weight;
+                    parent[temp->data] = A[i]->data;
+                    a = u = A[i]->data;
+                    b = v = temp->data;
+                }
+                temp = temp->next;
+            }
+        }
+        u = original_parent(u, parent);
+        v = original_parent(v, parent);
+        if(whether_original_parent_equal(u,v, parent))
+        {
+            printf("%d edge (%d, %d) = %d\n", ++ne, a, b, min);
+            mincost+=min;
+            visited[b] = 1;
+        }
+        remove_edge(A,n,a,b);
+    }
+    printf("The cost of MST is %d", mincost);
+}
+
 void Kruskal_adj_mat(int **G, int n)
 {
     //int * parent = (int *)calloc(n,sizeof(int));    
@@ -175,20 +229,28 @@ int main()
     int n,ch;
     printf("Enter the number of vertices\n");
     scanf("%d", &n);
-    //struct Node** A = (struct Node**)malloc(sizeof(struct Node*) * n);
-    //createAdjList(A, n);
-    
-    int ** G;
-    G = (int **)calloc(n, sizeof(int *));
-    for(int i=0;i<n;i++)
+
+    printf("Adjacency matrix or adjacency list? enter 1 or 2");
+    scanf("%d",&ch);
+
+    if (ch==1)
     {
-        G[i] = (int*)calloc(n, sizeof(int));
+        int ** G;
+        G = (int **)calloc(n, sizeof(int *));
+        for(int i=0;i<n;i++)
+        {
+            G[i] = (int*)calloc(n, sizeof(int));
+        }
+        createAdjMatrix(G,n);
+        printf("The minimum cost spanning tree using Kruskals algorithm and adjancency matrix is \n");
+        Kruskal_adj_mat(G,n);
     }
-    createAdjMatrix(G,n);
 
-    // struct Node** A = (struct Node**)malloc(sizeof(struct Node*) * n);
-    // createAdjList(A, n);
-
-    printf("The minimum cost spanning tree using Kruskals algorithm and adjancency matrix is \n");
-    Kruskal_adj_mat(G,n);
+    else 
+    {
+        struct Node** A = (struct Node**)malloc(sizeof(struct Node*) * n);
+        createAdjList(A, n);
+        printf("The minimum cost spanning tree using Kruskals algorithm and adjancency list is \n");
+        Kruskal_adj_list(A,n);
+    }
 }
